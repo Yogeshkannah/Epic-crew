@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Crew Tech</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    #i{
+        font-weight: bold;
+        opacity: 0.5;
+    }
+    a{
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm navbar-secondary bg-light">
+  <div class="container-fluid">
+    
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar"> -->
+      <!-- <span class="navbar-toggler-icon"></span> -->
+    </button>
+      <form class="d-flex" style="width:100%;">
+        <input class="form-control me-2" type="text" id="i" placeholder="enhanced by Crew Tech">
+        <button class="btn btn-success" type="button">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-sm bg-seconary navbar-secondary">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand" href="#">Logo</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">help</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="C:\Users\Dell\Desktop\wt\about_us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm"><img src="C:\Users\Dell\Desktop\wt\images\opencv-logo-small.png" class="rounded" alt="Cinque Terre"></div>
+        <div class="col-sm-10"><h1 class="text-success">OpenCV</h1></div>
+    </div>
+
+    <div class="row">
+        <div class="col"><h2>Open Source Computer Vision</h2></div>
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-start btn-group btn btn-sm">
+    <a href="index.html" class="btn btn-outline-primary">Main_page</a>
+    <a href="https://opencv24-python-tutorials.readthedocs.io/"  class="btn btn-outline-primary">Related_pages</a>
+    <button type="button" class="btn btn-outline-primary">Modules</button>
+    <button type="button" class="btn btn-outline-primary">Example</button>
+    <button type="button" class="btn btn-outline-primary">Documentation</button>
+    <form class="d-flex justify-content-end">
+        <input class="form-control me-2" type="text"  placeholder="Search...">
+        <button class="btn btn-outline-success" type="button">Search</button>
+      </form>
+  </div>
+
+  <div>
+    <hr>
+    <h1>
+      OpenCV Documentation
+    </h1>
+    <hr>
+  </div>
+
+  <ul class="container breadcrumb">
+    <li><a href="index.html">Home /</a></li>
+    <li><a href="imgpros.html">image prossecing /</a></li>
+    <li class="active">image thresholding</li>
+  </ul>
+
+<div class="container p-5 my-5 bg-light text-seconday border border-dark" style="width:70%;">
+     <h4>
+        Goal
+     </h4>
+
+     <ul>
+        <li>
+            In this tutorial, you will learn simple thresholding, adaptive thresholding and Otsu's thresholding.
+        </li>
+
+        <li>
+            You will learn the functions cv.threshold and cv.adaptiveThreshold.
+        </li>
+     </ul>
+
+     <h4>
+        Simple Thresholding
+     </h4>
+
+     <p>
+        Here, the matter is straight-forward. For every pixel, the same threshold value is applied. 
+        If the pixel value is smaller than the threshold, it is set to 0, otherwise it is set to a maximum value. 
+        The function cv.threshold is used to apply the thresholding. 
+        The first argument is the source image, which <b>should be a grayscale image.</b> 
+        The second argument is the threshold value which is used to classify the pixel values. 
+        The third argument is the maximum value which is assigned to pixel values exceeding the threshold.<br> 
+        OpenCV provides different types of thresholding which is given by the fourth parameter of the function.
+         Basic thresholding as described above is done by using the type cv.THRESH_BINARY. All simple thresholding types are:
+         </p>
+     
+    <ul class="text-primary">
+        <li>
+            cv.THRESH_BINARY
+        </li>
+        <li>
+            cv.THRESH_BINARY_INV
+        </li>
+        <li>
+            cv.THRESH_TRUNC
+        </li>
+        <li>
+            cv.THRESH_TOZERO
+        </li>
+        <li>
+            cv.THRESH_TOZERO_INV
+        </li>
+    </ul>
+
+     <p>
+        See the documentation of the types for the differences.
+     </p>
+     <p>
+        The method returns two outputs. The first is the threshold that was used and the second output is the thresholded image.
+     </p>
+     <p>
+        This code compares the different simple thresholding types:
+     </p>
+
+     <hr>
+        <code class="text-success">
+            import cv2 as cv<br>
+            import numpy as np<br>
+            from matplotlib import pyplot as plt<br>
+            img = cv.imread('gradient.png',0)<br>
+            ret,thresh1 = cv.threshold(img,127,255,cv.THRESH_BINARY)<br>
+            ret,thresh2 = cv.threshold(img,127,255,cv.THRESH_BINARY_INV)<br>
+            ret,thresh3 = cv.threshold(img,127,255,cv.THRESH_TRUNC)<br>
+            ret,thresh4 = cv.threshold(img,127,255,cv.THRESH_TOZERO)<br>
+            ret,thresh5 = cv.threshold(img,127,255,cv.THRESH_TOZERO_INV)<br>
+            titles = ['Original Image','BINARY','BINARY_INV','TRUNC','TOZERO','TOZERO_INV']<br>
+            images = [img, thresh1, thresh2, thresh3, thresh4, thresh5]<br>
+            for i in range(6):<br>
+                plt.subplot(2,3,i+1),plt.imshow(images[i],'gray',vmin=0,vmax=255)<br>
+                plt.title(titles[i])<br>
+                plt.xticks([]),plt.yticks([])<br>
+            plt.show()<br>
+        </code>
+        <br>
+    <hr>
+    
+    <h3 class="text-danger">
+        Note:
+    </h3>
+    <p>
+        To plot multiple images, we have used the plt.subplot() function. Please checkout the matplotlib docs for more details.
+    </p>
+    <hr>
+
+    <p>
+        The code yields this result:
+    </p>
+
+    <img class="img-responsive" style="padding-left: 240px;" src="C:\Users\Dell\Desktop\wt\images\threshold.jpg" alt="imgpross"><br><br>
+    
+    <p style="padding-left: 50%;">
+        <b>image</b>
+    </p>
+
+    <br>
+    <br>
+    <h4>
+        Adaptive Thresholding
+     </h4>
+
+    <p>
+        In the previous section, we used one global value as a threshold. 
+        But this might not be good in all cases, e.g. if an image has different lighting conditions in different areas. 
+        In that case, adaptive thresholding can help. Here, the algorithm determines the threshold for a pixel based on a small region around it. 
+        So we get different thresholds for different regions of the same image which gives better results for images with varying illumination.
+    </p>
+    <p>
+        In addition to the parameters described above, the method <b>cv.adaptiveThreshold</b> takes three input parameters:
+    </p>
+
+    <p>
+        The <b>adaptiveMethod</b> decides how the threshold value is calculated:
+    </p>
+    
+    <ul>
+        <li>
+            cv.ADAPTIVE_THRESH_MEAN_C: The threshold value is the mean of the neighbourhood area minus the constant C.
+        </li>
+        <li>
+            cv.ADAPTIVE_THRESH_GAUSSIAN_C: The threshold value is a gaussian-weighted sum of the neighbourhood values minus the constant C.
+        </li>
+    </ul>
+    <br>
+
+    <p>
+        The <b>blockSize</b> determines the size of the neighbourhood area and <b>C</b> is a constant that is subtracted from the mean or weighted sum of the neighbourhood pixels.
+    </p>
+
+    <br>
+
+    <p>
+        The code below compares <b>global thresholding</b> and <b>adaptive thresholding</b> for an image with varying illumination:
+    </p>
+
+    <code class="text-success">
+        import cv2 as cv<br>
+        import numpy as np<br>
+        from matplotlib import pyplot as plt<br>
+        img = cv.imread('sudoku.png',0)<br>
+        img = cv.medianBlur(img,5)<br>
+        ret,th1 = cv.threshold(img,127,255,cv.THRESH_BINARY)<br>
+        th2 = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_MEAN_C,\<br>
+                    cv.THRESH_BINARY,11,2)<br>
+        th3 = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,\<br>
+                    cv.THRESH_BINARY,11,2)<br>
+        titles = ['Original Image', 'Global Thresholding (v = 127)',<br>
+                    'Adaptive Mean Thresholding', 'Adaptive Gaussian Thresholding']<br>
+        images = [img, th1, th2, th3]<br>
+        for i in range(4):<br>
+            plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')<br>
+            plt.title(titles[i])<br>
+            plt.xticks([]),plt.yticks([])<br>
+        plt.show()<br>
+    </code>
+    <br>
+    <hr>
+    <h4>
+        <b>Result:</b>
+    </h4>
+    <img class="img-responsive" style="padding-left: 240px;" src="C:\Users\Dell\Desktop\wt\images\threshold2.jpg" alt="imgpross"><br><br>
+    
+    <p style="padding-left: 50%;">
+        <b>image</b>
+    </p>
+<div class="container-fluid bg-secondary" style="height: 200px;">
+  <h6 class="text-light" style="text-align:center;padding-top: 160px;">
+    copyrights @2023.
+  </h6>
+</div>
+</body>
+</html>

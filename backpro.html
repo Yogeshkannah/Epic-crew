@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Histogram backprojections</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    #i{
+        font-weight: bold;
+        opacity: 0.5;
+    }
+    a{
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm navbar-secondary bg-light">
+  <div class="container-fluid">
+    
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar"> -->
+      <!-- <span class="navbar-toggler-icon"></span> -->
+    </button>
+      <form class="d-flex" style="width:100%;">
+        <input class="form-control me-2" type="text" id="i" placeholder="enhanced by Crew Tech">
+        <button class="btn btn-success" type="button">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-sm bg-seconary navbar-secondary">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand" href="#">Logo</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">help</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="C:\Users\Dell\Desktop\wt\about_us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm"><img src="C:\Users\Dell\Desktop\wt\images\opencv-logo-small.png" class="rounded" alt="Cinque Terre"></div>
+        <div class="col-sm-10"><h1 class="text-success">OpenCV</h1></div>
+    </div>
+
+    <div class="row">
+        <div class="col"><h2>Open Source Computer Vision</h2></div>
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-start btn-group btn btn-sm">
+    <a href="index.html" class="btn btn-outline-primary">Main_page</a>
+    <a href="https://opencv24-python-tutorials.readthedocs.io/"  class="btn btn-outline-primary">Related_pages</a>
+    <button type="button" class="btn btn-outline-primary">Modules</button>
+    <button type="button" class="btn btn-outline-primary">Example</button>
+    <button type="button" class="btn btn-outline-primary">Documentation</button>
+    <form class="d-flex justify-content-end">
+        <input class="form-control me-2" type="text"  placeholder="Search...">
+        <button class="btn btn-outline-success" type="button">Search</button>
+      </form>
+  </div>
+
+  <div>
+    <hr>
+    <h1>
+      OpenCV Documentation
+    </h1>
+    <hr>
+  </div>
+
+  <ul class="container breadcrumb">
+    <li><a href="index.html">Home /</a></li>
+    <li><a href="imgpros.html">image processing /</a></li>
+    <li class="active">Histogram backprojections</li>
+  </ul>
+
+<div class="container p-5 my-5 bg-light text-seconday border border-dark" style="width:70%;">
+   <h4>
+    Goal
+   </h4>
+
+   <p>
+    In this chapter, we will learn about histogram backprojection.
+   </p>
+
+   <h4>
+    Theory
+   </h4>
+
+
+   <p>
+    It was proposed by <b>Michael J. Swain , Dana H. Ballard</b> in their paper Indexing via color histograms.
+   </p>
+   <br>
+
+   <p>
+    <b>What is it actually in simple words? </b>It is used for image segmentation or finding objects of interest in an image. 
+    In simple words, it creates an image of the same size (but single channel) as that of our input image, 
+    where each pixel corresponds to the probability of that pixel belonging to our object. In more simpler words, 
+    the output image will have our object of interest in more white compared to remaining part. Well, 
+    that is an intuitive explanation. (I can't make it more simpler). 
+    Histogram Backprojection is used with camshift algorithm etc.
+   </p>
+   <br>
+   <p>
+    <p>How do we do it ?</p> We create a histogram of an image containing our object of interest (in our case, the ground, 
+    leaving player and other things). The object should fill the image as far as possible for better results. And a 
+    color histogram is preferred over grayscale histogram, because color of the object is a better way to define the object than
+     its grayscale intensity. We then "back-project" this histogram over our test image where we need to find the object,
+      ie in other words, we calculate the probability of every pixel belonging to the ground and show it. 
+    The resulting output on proper thresholding gives us the ground alone.
+   </p>
+   
+   <br>
+
+   <h4>
+    Algorithm in Numpy
+   </h4>
+
+   <p>
+    1.First we need to calculate the color histogram of both the object we need to find (let it be 'M') and the image where we are going to search (let it be 'I').
+
+   </p>
+   
+   <br>
+   <hr>
+   <code class="text-success">
+    import numpy as np<br>
+    import cv2 as cvfrom matplotlib import pyplot as plt<br>
+    #roi is the object or region of object we need to find<br>
+    roi = cv.imread('rose_red.png')<br>
+    hsv = cv.cvtColor(roi,cv.COLOR_BGR2HSV)<br>
+    #target is the image we search in<br>
+    target = cv.imread('rose.png')<br>
+    hsvt = cv.cvtColor(target,cv.COLOR_BGR2HSV)<br>
+    # Find the histograms using calcHist. Can be done with np.histogram2d also<br>
+    M = cv.calcHist([hsv],[0, 1], None, [180, 256], [0, 180, 0, 256] )<br>
+    I = cv.calcHist([hsvt],[0, 1], None, [180, 256], [0, 180, 0, 256] )<br>
+   </code>
+   <hr>
+   <br>
+   
+   <p>
+    2.Find the ratio R=MI. Then backproject R, ie use R as palette and create a
+     new image with every pixel as its corresponding probability of being target. ie B(x,y) = R[h(x,y),s(x,y)] where h is hue 
+     and s is saturation of the pixel at (x,y). 
+    After that apply the condition B(x,y)=min[B(x,y),1].
+   </p>
+   <br>
+   <hr>
+   <code class="text-success">
+    h,s,v = cv.split(hsvt)<br>
+    B = R[h.ravel(),s.ravel()]<br>
+    B = np.minimum(B,1)<br>
+    B = B.reshape(hsvt.shape[:2])<br>
+   </code>
+   <hr>
+   <br>
+   <p>
+    3.Now apply a convolution with a circular disc, B=D∗B, where D is the disc kernel.
+   </p>
+   <br>
+
+   <hr>
+   <code class="text-success">
+    h,s,v = cv.split(hsvt)<br>
+    B = R[h.ravel(),s.ravel()]<br>
+    B = np.minimum(B,1)<br>
+    B = B.reshape(hsvt.shape[:2])<br>
+   </code>
+   <hr>
+   <br>
+
+   <p>
+    4.Now the location of maximum intensity gives us the location of object. 
+    If we are expecting a region in the image, thresholding for a suitable value gives a nice result.
+   </p>
+
+   <br>
+
+   <hr>
+   <code class="text-success">
+    ret,thresh = cv.threshold(B,50,255,0)<br>
+   
+   </code>
+   <hr>
+   <br>
+
+   <h4>
+    Backprojection in OpenCV
+  </h4>
+  <p>
+    OpenCV provides an inbuilt function <b>cv.calcBackProject().</b> Its parameters are almost same as the cv.calcHist() function. One of its parameter is histogram which is histogram of the object and we have to find it. Also, the object histogram should be normalized before passing on to the backproject function. It returns the probability image.
+     Then we convolve the image with a disc kernel and apply threshold. Below is my code and output :
+  </p>
+
+  <br>
+
+   <hr>
+   <code class="text-success">
+    import numpy as np<br>
+    import cv2 as cv<br>
+    roi = cv.imread('rose_red.png')<br>
+    hsv = cv.cvtColor(roi,cv.COLOR_BGR2HSV)<br>
+    target = cv.imread('rose.png')<br>
+    hsvt = cv.cvtColor(target,cv.COLOR_BGR2HSV)<br>
+    # calculating object histogram<br>
+    roihist = cv.calcHist([hsv],[0, 1], None, [180, 256], [0, 180, 0, 256] )<br>
+    # normalize histogram and apply backprojection<br>
+    cv.normalize(roihist,roihist,0,255,cv.NORM_MINMAX)<br>
+    dst = cv.calcBackProject([hsvt],[0,1],roihist,[0,180,0,256],1)<br>
+    # Now convolute with circular disc<br>
+    disc = cv.getStructuringElement(cv.MORPH_ELLIPSE,(5,5))<br>
+    cv.filter2D(dst,-1,disc,dst)<br>
+    # threshold and binary AND<br> 
+    ret,thresh = cv.threshold(dst,50,255,0)<br>
+    thresh = cv.merge((thresh,thresh,thresh))<br>
+    res = cv.bitwise_and(target,thresh)<br>
+    res = np.vstack((target,thresh,res))<br>
+    cv.imwrite('res.jpg',res)<br>
+    
+   </code>
+   <hr>
+   <br>
+
+   <p>
+    Below is one example I worked with. I used the region inside blue rectangle as sample object and I wanted to extract the full ground.
+   </p>
+   
+   <div class="text-center">
+    <img src="C:\Users\Dell\Desktop\wt\images\backproject.jpg" class="img-fluid" alt="...">
+  </div>
+
+</div>
+
+
+
+<div class="container-fluid bg-secondary" style="height: 200px;">
+  <h6 class="text-light" style="text-align:center;padding-top: 160px;">
+    copyrights @2023.
+  </h6>
+</div>
+</body>
+</html>

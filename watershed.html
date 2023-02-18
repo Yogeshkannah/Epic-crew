@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Histogram backprojections</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    #i{
+        font-weight: bold;
+        opacity: 0.5;
+    }
+    a{
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm navbar-secondary bg-light">
+  <div class="container-fluid">
+    
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar"> -->
+      <!-- <span class="navbar-toggler-icon"></span> -->
+    </button>
+      <form class="d-flex" style="width:100%;">
+        <input class="form-control me-2" type="text" id="i" placeholder="enhanced by Crew Tech">
+        <button class="btn btn-success" type="button">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-sm bg-seconary navbar-secondary">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand" href="#">Logo</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">help</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="C:\Users\Dell\Desktop\wt\about_us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm"><img src="C:\Users\Dell\Desktop\wt\images\opencv-logo-small.png" class="rounded" alt="Cinque Terre"></div>
+        <div class="col-sm-10"><h1 class="text-success">OpenCV</h1></div>
+    </div>
+
+    <div class="row">
+        <div class="col"><h2>Open Source Computer Vision</h2></div>
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-start btn-group btn btn-sm">
+    <a href="index.html" class="btn btn-outline-primary">Main_page</a>
+    <a href="https://opencv24-python-tutorials.readthedocs.io/"  class="btn btn-outline-primary">Related_pages</a>
+    <button type="button" class="btn btn-outline-primary">Modules</button>
+    <button type="button" class="btn btn-outline-primary">Example</button>
+    <button type="button" class="btn btn-outline-primary">Documentation</button>
+    <form class="d-flex justify-content-end">
+        <input class="form-control me-2" type="text"  placeholder="Search...">
+        <button class="btn btn-outline-success" type="button">Search</button>
+      </form>
+  </div>
+
+  <div>
+    <hr>
+    <h1>
+      OpenCV Documentation
+    </h1>
+    <hr>
+  </div>
+
+  <ul class="container breadcrumb">
+    <li><a href="index.html">Home /</a></li>
+    <li><a href="imgpros.html">image processing /</a></li>
+    <li class="active">Watershed Algorithm</li>
+  </ul>
+
+<div class="container p-5 my-5 bg-light text-seconday border border-dark" style="width:70%;">
+   <h4>
+    Goal
+   </h4>
+
+   <p>
+    In this tutorial you will learn how to:
+   </p>
+
+  <ul>
+
+    <li>
+        Use the OpenCV function cv::filter2D in order to perform some laplacian filtering for image sharpening
+    </li>
+    <li>
+        Use the OpenCV function cv::distanceTransform in order to obtain the derived representation of a binary image, where the value of each pixel is replaced by its distance to the nearest background pixel
+    </li>
+    <li>
+        Use the OpenCV function cv::watershed in order to isolate objects in the image from the background
+    </li>
+  </ul>
+
+
+
+   <p>
+    <b>Theory</b>
+   </p>
+   <br>
+
+   <p>
+    <b>Code</b>
+   </p>
+   <br>
+   <p>
+    This tutorial code's is shown lines below. You can also download it from here:
+   </p>
+   <hr>
+   <code class="text-success">
+        
+    from __future__ import print_function<br>
+    import cv2 as cv<br>
+    import numpy as np<br>
+    import argparse<br>
+    import random as rng<br>
+    rng.seed(12345)<br>
+    parser = argparse.ArgumentParser(description='Code for Image Segmentation with Distance Transform and Watershed Algorithm.<br>
+        Sample code showing how to segment overlapping objects using Laplacian filtering, <br>
+        in addition to Watershed and Distance Transformation')<br>
+    parser.add_argument('--input', help='Path to input image.', default='cards.png')<br>
+    args = parser.parse_args()<br>
+    src = cv.imread(cv.samples.findFile(args.input))<br>
+    if src is None:<br>
+        print('Could not open or find the image:', args.input)<br>
+        exit(0)<br>
+    # Show source image<br>
+    cv.imshow('Source Image', src)<br>
+    src[np.all(src == 255, axis=2)] = 0<br>
+    # Show output image<br>
+    cv.imshow('Black Background Image', src)<br>
+    kernel = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], dtype=np.float32)<br>
+    # do the laplacian filtering as it is<br>
+    # well, we need to convert everything in something more deeper then CV_8U<br>
+    # because the kernel has some negative values,<br>
+    # and we can expect in general to have a Laplacian image with negative values<br>
+    # BUT a 8bits unsigned int (the one we are working with) can contain values from 0 to 255<br>
+    # so the possible negative number will be truncated<br>
+    imgLaplacian = cv.filter2D(src, cv.CV_32F, kernel)<br>
+    sharp = np.float32(src)<br>
+    imgResult = sharp - imgLaplacian<br>
+    # convert back to 8bits gray scale<br>
+    imgResult = np.clip(imgResult, 0, 255)<br>
+    imgResult = imgResult.astype('uint8')<br>
+    imgLaplacian = np.clip(imgLaplacian, 0, 255)<br>
+    imgLaplacian = np.uint8(imgLaplacian)<br>
+    #cv.imshow('Laplace Filtered Image', imgLaplacian)<br>
+    cv.imshow('New Sharped Image', imgResult)<br>
+    bw = cv.cvtColor(imgResult, cv.COLOR_BGR2GRAY)<br>
+    _, bw = cv.threshold(bw, 40, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)<br>
+    cv.imshow('Binary Image', bw)<br>
+    dist = cv.distanceTransform(bw, cv.DIST_L2, 3)<br>
+    # Normalize the distance image for range = {0.0, 1.0}<br>
+    # so we can visualize and threshold it<br>
+    cv.normalize(dist, dist, 0, 1.0, cv.NORM_MINMAX)<br>
+    cv.imshow('Distance Transform Image', dist)<br>
+    _, dist = cv.threshold(dist, 0.4, 1.0, cv.THRESH_BINARY)<br>
+    # Dilate a bit the dist image<br>
+    kernel1 = np.ones((3,3), dtype=np.uint8)<br> 
+    dist = cv.dilate(dist, kernel1)<br>
+    cv.imshow('Peaks', dist)<br>
+    dist_8u = dist.astype('uint8')<br>
+    # Find total markers<br>
+    contours, _ = cv.findContours(dist_8u, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)<br>
+    # Create the marker image for the watershed algorithm<br>
+    markers = np.zeros(dist.shape, dtype=np.int32)<br>
+    # Draw the foreground markers<br>
+    for i in range(len(contours)):<br>
+        cv.drawContours(markers, contours, i, (i+1), -1)<br>
+    # Draw the background marker<br>
+    cv.circle(markers, (5,5), 3, (255,255,255), -1)<br>
+    markers_8u = (markers * 10).astype('uint8')<br>
+    cv.imshow('Markers', markers_8u)<br>
+    cv.watershed(imgResult, markers)<br>
+    #mark = np.zeros(markers.shape, dtype=np.uint8)<br>
+    mark = markers.astype('uint8')<br>
+    mark = cv.bitwise_not(mark)<br>
+    # uncomment this if you want to see how the mark<br>
+    # image looks like at that point<br>
+    #cv.imshow('Markers_v2', mark)<br>
+    # Generate random colors<br>
+    colors = []<br>
+    for contour in contours:<br>
+        colors.append((rng.randint(0,256), rng.randint(0,256), rng.randint(0,256)))<br>
+    # Create the result image<br>
+    dst = np.zeros((markers.shape[0], markers.shape[1], 3), dtype=np.uint8)<br>
+    # Fill labeled objects with random colors<br>
+    for i in range(markers.shape[0]):<br>
+        for j in range(markers.shape[1]):<br>
+            index = markers[i,j]<br>
+            if index > 0 and index <= len(contours):<br>
+                dst[i,j,:] = colors[index-1]<br>
+    # Visualize the final image<br>
+    cv.imshow('Final Result', dst)<br>
+    cv.waitKey()<br>
+
+    </code>
+    <br>
+    <hr>
+   <p>
+    Below is one example I worked with. I used the region inside blue rectangle as sample object and I wanted to extract the full ground.
+   </p>
+   <br>
+   <br>
+   <h4>
+    Explanation / Result
+   </h4>
+
+   <ul>
+    <li>
+        Load the source image and check if it is loaded without any problem, then show it:
+    </li>
+   </ul>
+   <hr>
+   <code class="text-success">
+    # Load the image<br>
+        parser = argparse.ArgumentParser(description='Code for Image Segmentation with Distance Transform and Watershed Algorithm.<br>
+        Sample code showing how to segment overlapping objects using Laplacian filtering, <br>
+        in addition to Watershed and Distance Transformation')<br>
+    parser.add_argument('--input', help='Path to input image.', default='cards.png')<br>
+    args = parser.parse_args()<br>
+    src = cv.imread(cv.samples.findFile(args.input))<br>
+    if src is None:<br>
+        print('Could not open or find the image:', args.input)<br>
+        exit(0)<br>
+    # Show source image<br>
+    cv.imshow('Source Image', src)<br>
+   </code><br>
+   <hr>
+   <br>
+
+   <div class="text-center">
+    <img src="C:\Users\Dell\Desktop\wt\images\watershed.jpeg" class="img-fluid" alt="...">
+  </div>
+  <br>
+  <br>
+
+  <ul>
+    <li>
+        Then if we have an image with a white background, it is good to transform it to black. This will help us to discriminate the foreground objects easier when we will apply the Distance Transform:
+    </li>
+  </ul>
+
+  <hr>
+  <code class="text-success">
+    Change the background from white to black, since that will help later to extract<br>
+    # better results during the use of Distance Transform<br>
+    src[np.all(src == 255, axis=2)] = 0<br>
+    # Show output image<br>
+    cv.imshow('Black Background Image', src)<br>
+  </code>
+  <br>
+  <hr>
+
+  <br>
+  <div class="text-center">
+    <img src="C:\Users\Dell\Desktop\wt\images\watershed2.jpeg" class="img-fluid" alt="...">
+  </div>
+<br>
+<br>
+
+<ul>
+    <li>
+        Afterwards we will sharpen our image in order to acute the edges of the foreground objects. We will apply a laplacian filter with a quite strong filter (an approximation of second derivative):
+    </li>
+  </ul>
+
+  <br>
+  <hr>
+  <code class="text-success">
+    # Create a kernel that we will use to sharpen our image<br>
+    # an approximation of second derivative, a quite strong kernel<br>
+    kernel = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], dtype=np.float32)<br>
+    # do the laplacian filtering as it is<br>
+    # well, we need to convert everything in something more deeper then CV_8U<br>
+    # because the kernel has some negative values,<br>
+    # and we can expect in general to have a Laplacian image with negative values<br>
+    # BUT a 8bits unsigned int (the one we are working with) can contain values from 0 to 255<br>
+    # so the possible negative number will be truncated<br>
+    imgLaplacian = cv.filter2D(src, cv.CV_32F, kernel)<br>
+    sharp = np.float32(src)<br>
+    imgResult = sharp - imgLaplacian<br>
+    # convert back to 8bits gray scale<br>
+    imgResult = np.clip(imgResult, 0, 255)<br>
+    imgResult = imgResult.astype('uint8')<br> 
+    imgLaplacian = np.clip(imgLaplacian, 0, 255)<br>
+    imgLaplacian = np.uint8(imgLaplacian)<br>
+    #cv.imshow('Laplace Filtered Image', imgLaplacian)<br>
+    cv.imshow('New Sharped Image', imgResult)<br>
+  </code>
+  <br>
+  <hr>
+
+  <br>
+  <div class="text-center">
+    <img src="C:\Users\Dell\Desktop\wt\images\watershed4.jpeg" class="img-fluid" alt="...">
+  </div>
+  <div class="text-center">
+    <img src="C:\Users\Dell\Desktop\wt\images\watershed3.jpeg" class="img-fluid" alt="...">
+  </div>
+
+
+</div>
+
+
+
+<div class="container-fluid bg-secondary" style="height: 200px;">
+  <h6 class="text-light" style="text-align:center;padding-top: 160px;">
+    copyrights @2023.
+  </h6>
+</div>
+</body>
+</html>
